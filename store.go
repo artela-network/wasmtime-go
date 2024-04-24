@@ -4,9 +4,11 @@ package wasmtime
 // #include "shims.h"
 import "C"
 import (
+	"fmt"
 	"reflect"
 	"runtime"
 	"sync"
+	"sync/atomic"
 	"unsafe"
 )
 
@@ -63,6 +65,9 @@ func NewStore(engine *Engine) *Store {
 	gStoreMap[idx] = &storeData{engine: engine}
 	gStoreLock.Unlock()
 
+	storeCount.Store(storeCount.Load() + 1)
+	fmt.Println("---creating NewStore", storeCount.Load())
+
 	ptr := C.go_store_new(engine.ptr(), C.size_t(idx))
 	store := &Store{
 		_ptr:   ptr,
@@ -70,9 +75,14 @@ func NewStore(engine *Engine) *Store {
 	}
 	runtime.SetFinalizer(store, func(store *Store) {
 		store.Close()
+		C.wasmtime_store_delete(store._ptr)
+		storeCount.Store(storeCount.Load() - 1)
+		fmt.Println("---freeing NewStore", storeCount.Load())
 	})
 	return store
 }
+
+var storeCount atomic.Int32
 
 //export goFinalizeStore
 func goFinalizeStore(env unsafe.Pointer) {
