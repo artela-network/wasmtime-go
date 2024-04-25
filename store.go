@@ -66,7 +66,7 @@ func NewStore(engine *Engine) *Store {
 	gStoreLock.Unlock()
 
 	storeCount.Store(storeCount.Load() + 1)
-	fmt.Println("---creating NewStore", storeCount.Load())
+	fmt.Println("_____creating NewStore", storeCount.Load())
 	runtime.GC()
 
 	ptr := C.go_store_new(engine.ptr(), C.size_t(idx))
@@ -77,7 +77,7 @@ func NewStore(engine *Engine) *Store {
 	runtime.SetFinalizer(store, func(store *Store) {
 		store.Close()
 		storeCount.Store(storeCount.Load() - 1)
-		fmt.Println("---freeing NewStore", storeCount.Load())
+		fmt.Println("_____freeing NewStore", storeCount.Load())
 	})
 	return store
 }
