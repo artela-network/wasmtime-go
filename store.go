@@ -75,7 +75,6 @@ func NewStore(engine *Engine) *Store {
 	}
 	runtime.SetFinalizer(store, func(store *Store) {
 		store.Close()
-		C.wasmtime_store_delete(store._ptr)
 		storeCount.Store(storeCount.Load() - 1)
 		fmt.Println("---freeing NewStore", storeCount.Load())
 	})
