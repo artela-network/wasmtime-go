@@ -67,6 +67,7 @@ func NewStore(engine *Engine) *Store {
 
 	storeCount.Store(storeCount.Load() + 1)
 	fmt.Println("---creating NewStore", storeCount.Load())
+	runtime.GC()
 
 	ptr := C.go_store_new(engine.ptr(), C.size_t(idx))
 	store := &Store{
