@@ -89,6 +89,12 @@ func (cfg *Config) SetWasmSIMD(enabled bool) {
 	runtime.KeepAlive(cfg)
 }
 
+// SetWasmRelaxedSIMD configures whether the wasm RelaxedSIMD proposal is enabled
+func (cfg *Config) SetWasmRelaxedSIMD(enabled bool) {
+       C.wasmtime_config_wasm_relaxed_simd_set(cfg.ptr(), C.bool(enabled))
+       runtime.KeepAlive(cfg)
+}
+
 // SetWasmBulkMemory configures whether the wasm bulk memory proposal is enabled
 func (cfg *Config) SetWasmBulkMemory(enabled bool) {
 	C.wasmtime_config_wasm_bulk_memory_set(cfg.ptr(), C.bool(enabled))
@@ -230,6 +236,31 @@ func (cfg *Config) SetCraneliftFlag(name string, value string) {
 	C.wasmtime_config_cranelift_flag_set(cfg.ptr(), cstrName, cstrValue)
 	C.free(unsafe.Pointer(cstrName))
 	C.free(unsafe.Pointer(cstrValue))
+	runtime.KeepAlive(cfg)
+}
+
+func (cfg *Config) SetStaticMemoryForced(enable bool) {
+	C.wasmtime_config_static_memory_forced_set(cfg.ptr(), C.bool(enable))
+	runtime.KeepAlive(cfg)
+}
+
+func (cfg *Config) SetStaticMemoryMaximumSize(size uint64) {
+	C.wasmtime_config_static_memory_maximum_size_set(cfg.ptr(), C.uint64_t(size))
+	runtime.KeepAlive(cfg)
+}
+
+func (cfg *Config) SetStaticMemoryGuardSize(size uint64) {
+	C.wasmtime_config_static_memory_guard_size_set(cfg.ptr(), C.uint64_t(size))
+	runtime.KeepAlive(cfg)
+}
+
+func (cfg *Config) SetDynamicMemoryGuardSize(size uint64) {
+	C.wasmtime_config_dynamic_memory_guard_size_set(cfg.ptr(), C.uint64_t(size))
+	runtime.KeepAlive(cfg)
+}
+
+func (cfg *Config) SetDynamicMemoryReservedForGrowth(size uint64) {
+	C.wasmtime_config_dynamic_memory_reserved_for_growth_set(cfg.ptr(), C.uint64_t(size))
 	runtime.KeepAlive(cfg)
 }
 
