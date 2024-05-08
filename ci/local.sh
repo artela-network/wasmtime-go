@@ -27,7 +27,8 @@ if [ ! -f "$build/libwasmtime.a" ]; then
 fi
 
 for d in "linux-x86_64" "macos-x86_64" "linux-aarch64" "macos-aarch64"; do
-  ln -s "$build/libwasmtime.a" "build/$d/libwasmtime.a"
+  #ln -s "$build/libwasmtime.a" "build/$d/libwasmtime.a"
+  cp "$build/libwasmtime.a" "build/$d/libwasmtime.a"
 done
 
 cp "$wasmtime"/crates/c-api/include/*.h build/include
