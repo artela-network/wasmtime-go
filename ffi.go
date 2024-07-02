@@ -10,10 +10,8 @@ package wasmtime
 // #cgo darwin,arm64 LDFLAGS:-L${SRCDIR}/build/macos-aarch64
 // #cgo windows,amd64 LDFLAGS:-L${SRCDIR}/build/windows-x86_64
 // #include <wasm.h>
-// #include <aspect_wasm_instrument.h>
 import "C"
 import (
-	"fmt"
 	"runtime"
 	"unsafe"
 )
@@ -57,19 +55,4 @@ func stringToByteVec(s string) C.wasm_byte_vec_t {
 	C.memcpy(unsafe.Pointer(vec.data), unsafe.Pointer(C._GoStringPtr(s)), vec.size)
 	runtime.KeepAlive(s)
 	return vec
-}
-
-func Instrument(rawModule []byte) ([]byte, error) {
-	cRawModule := (*C.uchar)(unsafe.Pointer(&rawModule[0]))
-	len := C.size_t(len(rawModule))
-
-	cResult := C.wasm_instrument(cRawModule, len)
-	if cResult.ptr == nil {
-		return nil, fmt.Errorf("wasm_instrument failed")
-	}
-
-	output := C.GoBytes(cResult.ptr, C.int(cResult.len))
-	C.wasm_instrument_free(cResult.ptr)
-
-	return output, nil
 }

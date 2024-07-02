@@ -1,3 +1,6 @@
+#ifndef INSTRUMENT_H
+#define INSTRUMENT_H
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -13,3 +16,5 @@ void wasm_instrument_free(void* ptr);
 #ifdef __cplusplus
 }
 #endif
+
+#endif // #ifdef INSTRUMENT_H
